@@ -11,11 +11,11 @@ export const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container fixed>
-        <Box data-testid="app-box" m={2}>
-          <HistoryTable getData={api.getUsersDiff} tableName="User" />
+        <Box m={10}>
+          <HistoryTable getApiData={api.getUsersDiff} tableName="User" />
         </Box>
-        <Box data-testid="app-box" m={2}>
-          <HistoryTable getData={api.getProjectsDiff} tableName="Project" />
+        <Box m={10}>
+          <HistoryTable getApiData={api.getProjectsDiff} tableName="Project" />
         </Box>
       </Container>
     </ThemeProvider>
