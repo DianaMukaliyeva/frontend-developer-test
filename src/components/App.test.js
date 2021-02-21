@@ -1,6 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { App } from './App';
+
+import App from './App';
+import HistoryTable from './HistoryTable';
 
 describe('<App />', () => {
   let wrapper;
@@ -10,8 +12,8 @@ describe('<App />', () => {
   });
 
   describe('render()', () => {
-    it('renders the Box', () => {
-      expect(wrapper.find({ 'data-testid': 'app-box' })).toHaveLength(1);
+    it('renders two <HistoryTable /> components', () => {
+      expect(wrapper.find(HistoryTable)).toHaveLength(2);
     });
   });
 });
