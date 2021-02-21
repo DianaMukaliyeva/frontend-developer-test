@@ -9,26 +9,22 @@ import Paper from '@material-ui/core/Paper';
 import TableHeader from './TableHeader.js';
 import TableFooter from './TableFooter.js';
 
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
+const descendingComparator = (a, b) => {
+  if (b < a) return -1;
+  if (b > a) return 1;
   return 0;
 };
 
-const getComparator = (order, orderBy) => {
+const getComparator = (order) => {
   return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+    ? (a, b) => descendingComparator(a, b)
+    : (a, b) => -descendingComparator(a, b);
 };
 
 const stableSort = (array, comparator) => {
-  const stabilizedThis = array.map((el, index) => [el, index]);
+  const stabilizedThis = array.map((el) => [el]);
   stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
+    const order = comparator(a[0].date, b[0].date);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
@@ -39,9 +35,8 @@ const createData = (date, id, oldValue, newName) => {
   return { date, id, oldValue, newName };
 };
 
-const HistoryTable = ({ getData, tableName }) => {
+const HistoryTable = ({ getApiData, tableName }) => {
   const [order, setOrder] = React.useState('desc');
-  const [orderBy, setOrderBy] = React.useState('date');
   const [rows, setRows] = React.useState([]);
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -50,7 +45,7 @@ const HistoryTable = ({ getData, tableName }) => {
     try {
       setLoading(true);
 
-      const history = await getData();
+      const history = await getApiData();
       setRows([
         ...rows,
         ...history.data.map((user) =>
@@ -73,24 +68,18 @@ const HistoryTable = ({ getData, tableName }) => {
     fetchData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
+  const handleRequestSort = () => {
+    const isAsc = order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
   };
 
   return (
     <Paper>
       <TableContainer>
         <Table>
-          <TableHeader
-            tableName={tableName}
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-          />
+          <TableHeader tableName={tableName} order={order} onRequestSort={handleRequestSort} />
           <TableBody>
-            {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
+            {stableSort(rows, getComparator(order)).map((row) => {
               return (
                 <TableRow hover key={row.id}>
                   <TableCell>{row.date}</TableCell>
@@ -109,7 +98,7 @@ const HistoryTable = ({ getData, tableName }) => {
 };
 
 HistoryTable.propTypes = {
-  getData: PropTypes.func.isRequired,
+  getApiData: PropTypes.func.isRequired,
   tableName: PropTypes.string.isRequired,
 };
 

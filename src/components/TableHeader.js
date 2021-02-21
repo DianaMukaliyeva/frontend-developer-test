@@ -7,28 +7,18 @@ import TableRow from '@material-ui/core/TableRow';
 
 import useStyles from '../styles/styles.js';
 
-const headCell = { id: 'date', numeric: true, disablePadding: false, label: 'Date' };
-
-const TableHeader = ({ order, orderBy, onRequestSort, tableName }) => {
+const TableHeader = ({ order, onRequestSort, tableName }) => {
   const classes = useStyles();
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
 
   return (
     <TableHead>
       <TableRow>
         <TableCell sortDirection={order}>
-          <TableSortLabel
-            active={!!order}
-            direction={order}
-            onClick={createSortHandler(headCell.id)}>
+          <TableSortLabel direction={order} onClick={onRequestSort}>
             Date
-            {orderBy === headCell.id ? (
-              <span className={classes.visuallyHidden}>
-                {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-              </span>
-            ) : null}
+            <span className={classes.visuallyHidden}>
+              {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+            </span>
           </TableSortLabel>
         </TableCell>
         <TableCell>{tableName} ID</TableCell>
@@ -42,7 +32,6 @@ const TableHeader = ({ order, orderBy, onRequestSort, tableName }) => {
 TableHeader.propTypes = {
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
   tableName: PropTypes.string.isRequired,
 };
 
